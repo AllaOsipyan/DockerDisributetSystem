@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS linksSchema.link (
+    id SERIAL PRIMARY KEY,
+    url TEXT NOT NULL
+);

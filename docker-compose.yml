@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+  app:
+    image: demo
+    ports:
+      - "8000:8080"
+    links:
+      - db
+    environment:
+      - DB_CONNECTION=host='db' dbname='links' user='postgres' password='1234556789'
+  db:
+    image: postres
+    volumes:
+      - .:/code
+      - dbvolume:o/var/log
+    environment:
+      - POSTGRES_PASSWORD=1234556789
+      - POSTGRES_DB=links
+volumes:
+  dbvolume:
