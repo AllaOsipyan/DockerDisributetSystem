@@ -1,12 +1,10 @@
 version: '3.8'
 
 services:
-  app:
+  app1:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
     depends_on:
       - db
     environment:
@@ -14,6 +12,26 @@ services:
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=1234556789
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - INSTANCE_NAME=first
+  app2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/database
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1234556789
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - INSTANCE_NAME=second
+  nginx:
+    build: nginx/.
+    ports:
+      - "8500:80"
+    links:
+      - app1
+      - app2
   db:
     image: postgres
     environment:
