@@ -9,6 +9,6 @@ FROM java:latest
 WORKDIR /src/java
 EXPOSE 8080
 COPY --from=build demo/target/demo-0.0.1-SNAPSHOT.jar /opt/demo/demo-0.0.1-SNAPSHOT.jar
-CMD ["java","-jar","/opt/demo/demo-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "/opt/demo/demo-0.0.1-SNAPSHOT.jar"]
 
 

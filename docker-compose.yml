@@ -1,20 +1,28 @@
-version: "3.8"
+version: '3.8'
+
 services:
   app:
-    image: demo
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "8000:8080"
-    links:
+      - "8080:8080"
+    depends_on:
       - db
     environment:
-      - DB_CONNECTION=host='db' dbname='links' user='postgres' password='1234556789'
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/database
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1234556789
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
   db:
-    image: postres
-    volumes:
-      - .:/code
-      - dbvolume:o/var/log
+    image: postgres
     environment:
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=1234556789
-      - POSTGRES_DB=links
+      - POSTGRES_DB=database
+    ports:
+      -  "5432"
+    volumes:
+      - "postgres_db:/var/lib/postgresql/data/"
 volumes:
-  dbvolume:
+  postgres_db:
