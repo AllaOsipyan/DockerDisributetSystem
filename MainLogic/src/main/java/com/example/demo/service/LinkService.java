@@ -5,9 +5,10 @@ import com.example.demo.models.Link;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -33,7 +34,17 @@ public class LinkService {
         try {
             return linkRepository.findLinkById(id);
         } catch (Exception e) {
+            System.out.println("err:"+ Arrays.toString(e.getStackTrace()));
         }
         return null;
+    }
+
+    @Transactional
+    public void patchLink(Long linkId, int newStatus) throws Exception {
+        try {
+            linkRepository.updateStatus(linkId, newStatus);
+        }catch (Exception e){
+            throw new Exception("Not Modified");
+        }
     }
 }

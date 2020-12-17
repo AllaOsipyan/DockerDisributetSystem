@@ -1,0 +1,11 @@
+FROM maven:latest as build
+COPY pom.xml demo/pom.xml
+COPY Consumer/pom.xml demo/consumer/pom.xml
+COPY Consumer/src demo/consumer/src
+RUN mvn -f demo/consumer/pom.xml clean package -DskipTests
+
+FROM java:latest
+
+WORKDIR /consumer/src/java
+COPY --from=build demo/consumer/target/Consumer-0.0.1-SNAPSHOT.jar /opt/demo/Consumer/Consumer-0.0.1-SNAPSHOT.jar
+CMD ["java", "-jar", "/opt/demo/Consumer/Consumer-0.0.1-SNAPSHOT.jar"]

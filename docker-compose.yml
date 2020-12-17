@@ -5,26 +5,36 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    ports:
+     - "8080:8080"
+    links:
+      - queue
     depends_on:
       - db
+      - queue
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/database
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=1234556789
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - INSTANCE_NAME=first
+      - RABBIT_CONNECTION=queue
   app2:
     build:
       context: .
       dockerfile: Dockerfile
+    links:
+      - queue
     depends_on:
       - db
+      - queue
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/database
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=1234556789
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - INSTANCE_NAME=second
+      - RABBIT_CONNECTION=queue
   nginx:
     build: nginx/.
     ports:
@@ -32,6 +42,23 @@ services:
     links:
       - app1
       - app2
+  queue:
+    image: rabbitmq:management
+    hostname: rabbit
+    ports:
+      - "15672:15672"
+    volumes:
+      - rabbitvolume:/varlib/rabbitmq/
+  loader:
+    build:
+      context: .
+      dockerfile: Dockerfile-rabbit
+    environment:
+      - RABBIT_CONNECTION=queue
+    links:
+      - queue
+  redis:
+    image: redis
   db:
     image: postgres
     environment:
@@ -44,3 +71,4 @@ services:
       - "postgres_db:/var/lib/postgresql/data/"
 volumes:
   postgres_db:
+  rabbitvolume:
