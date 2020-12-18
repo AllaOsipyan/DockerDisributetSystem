@@ -55,8 +55,10 @@ services:
       dockerfile: Dockerfile-rabbit
     environment:
       - RABBIT_CONNECTION=queue
+      - REDIS_CONNECTION=redis
     links:
       - queue
+      - redis
   redis:
     image: redis
   db:
