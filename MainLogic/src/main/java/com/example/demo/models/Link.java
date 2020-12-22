@@ -9,9 +9,6 @@ public class Link {
     @GeneratedValue
     private Long id;
 
-
-
-
     @Column(name = "status")
     private int status;
 

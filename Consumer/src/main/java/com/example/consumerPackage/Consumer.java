@@ -46,12 +46,13 @@ public class Consumer {
         String inUrl = in.substring(in.indexOf("url")+6, in.length()-2).replace("\\", "");
         System.out.println(inLinkId+ "aaa"+ inUrl);
         int status = findByKey(inUrl);
-        System.out.println(this.redisTemplate);
+        System.out.println(inUrl);
         System.out.println(this.valueOperations);
         if(status == -1) {
             try {
                 URL url = new URL(inUrl);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
                 con.setRequestMethod("GET");
                 int code = con.getResponseCode();
                 System.out.println(code);
@@ -59,6 +60,7 @@ public class Consumer {
                 save(inUrl, code);
             } catch (Exception e) {
                 System.out.println(Arrays.toString(e.getStackTrace()));
+                sendMessage(inLinkId, -1, inUrl);
             }
         }
         else {
@@ -68,7 +70,7 @@ public class Consumer {
     }
     private void sendMessage(Long inLinkId, int code, String inUrl) {
         try {
-            URL appUrl = new URL("http://192.168.99.100:8080/status/link");
+            URL appUrl = new URL("http://192.168.99.100:8500/status/link");
             HttpURLConnection appConnection = (HttpURLConnection) appUrl.openConnection();
             appConnection.setRequestMethod("PUT");
             appConnection.setDoOutput(true);

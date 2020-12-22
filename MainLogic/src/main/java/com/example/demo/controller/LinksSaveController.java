@@ -26,11 +26,10 @@ public class LinksSaveController {
         try {
             Link savedLink = linkService.saveURl(url);
             Long savedLinkId = savedLink.getId();
-            /*System.out.println(savedLink.getStatus());*/
             sendHandler.sendMessage(savedLinkId, url.getUrl());
             return new ResponseEntity<Long>(savedLinkId, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.toString(), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<String>("NOT_FOUND", HttpStatus.OK);
         }
     }
 
@@ -53,7 +52,7 @@ public class LinksSaveController {
             return new ResponseEntity<>(link.getId(), HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(Arrays.toString(e.getStackTrace()));
-            return new ResponseEntity<>("Не найдено", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("NOT_FOUND", HttpStatus.OK);
         }
 
     }
@@ -64,7 +63,7 @@ public class LinksSaveController {
             Link link = linkService.getURl(id);
             return new ResponseEntity<>(link, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Не найдено", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("NOT_FOUND", HttpStatus.OK);
         }
 
     }
